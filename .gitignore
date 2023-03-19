@@ -72,6 +72,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Ignore les dossiers et fichiers liés à InWorld
+
 /[Aa]ssets/Inworld.AI/*
 !/[Aa]ssets/Inworld.AI/Resources/
 
@@ -80,6 +81,20 @@ crashlytics-build.properties
 
 /[Aa]ssets/Inworld.AI/Resources/DefaultInworldUser/*
 !/[Aa]ssets/Inworld.AI/Resources/DefaultInworldUser/Characters/
+
+
+
+/[Aa]ssets/Inworld.AI/*
+!/[Aa]ssets/Inworld.AI/Scripts/
+
+/[Aa]ssets/Inworld.AI/Scripts/*
+!/[Aa]ssets/Inworld.AI/Scripts/Runtime/
+
+/[Aa]ssets/Inworld.AI/Scripts/Runtime/*
+!/[Aa]ssets/Inworld.AI/Scripts/Runtime/Chat/
+
+/[Aa]ssets/Inworld.AI/Scripts/Runtime/Chat/*
+!/[Aa]ssets/Inworld.AI/Scripts/Runtime/Chat/InworldPlayer.cs
 
 /[Aa]ssets/TextMesh Pro
 
