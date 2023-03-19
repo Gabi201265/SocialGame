@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
         mycam.orthographicSize = (Screen.height / 100f );
         if (target)
         {
-            transform.position = Vector3.Lerp(target.position, target.position,0.1f)+new Vector3(0,0,-5);  
+            transform.position = Vector3.Lerp(target.position, target.position,0.1f)+new Vector3(0,0,-15);  
         }
     }
 }
