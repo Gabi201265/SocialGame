@@ -13,6 +13,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+
 namespace Inworld.Sample
 {
     /// <summary>
@@ -35,7 +36,7 @@ namespace Inworld.Sample
         [SerializeField] Vector3 m_InitPosition;
         [SerializeField] Vector3 m_InitRotation;
         [SerializeField] public static bool m_chatIsOpened { set; get; } = false;
-
+        
         #endregion
 
         #region Private Variables
@@ -77,8 +78,15 @@ namespace Inworld.Sample
         }
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.BackQuote))
+            
+            //m_GlobalChatCanvas.activeSelf == false si chat is close
+            //m_GlobalChatCanvas.activeSelf == true si chat is open
+            
+            if (Input.GetKeyUp(KeyCode.Return) && string.IsNullOrEmpty(m_InputField.text))
             {
+                //ne fait rien si aucun PNJ dectecter
+                if (InworldController.IsCapturing == false && m_GlobalChatCanvas.activeSelf == false)
+                    return;
                 m_GlobalChatCanvas.SetActive(!m_GlobalChatCanvas.activeSelf);
                 if (m_CameraController)
                     m_CameraController.enabled = !m_GlobalChatCanvas.activeSelf;
@@ -87,13 +95,20 @@ namespace Inworld.Sample
                 //permet au playerMovement de savoir si le chat est ouvert ou pas.
                 m_chatIsOpened = m_GlobalChatCanvas.activeSelf;
                 //Debug.Log(m_chatIsOpened ? "le chat est open" : "le chat est fermé");
-                
+                m_InputField.ActivateInputField(); //focus on input when open chat
             }
+            //return if chat is close
             if (!m_GlobalChatCanvas.activeSelf)
                 return;
+            //return if chat is open
             if (!Input.GetKeyUp(KeyCode.Return) && !Input.GetKeyUp(KeyCode.KeypadEnter))
                 return;
+            //sendText if key == enter
             SendText();
+            m_InputField.ActivateInputField();//focus on input when send message
+            
+
+
         }
         #endregion
 
