@@ -35,7 +35,6 @@ namespace Inworld.Sample
         [SerializeField] Vector3 m_InitPosition;
         [SerializeField] Vector3 m_InitRotation;
         [SerializeField] public static bool m_chatIsOpened { set; get; } = false;
-        private RectTransform m_CanvasPosition;
 
         #endregion
 
@@ -74,22 +73,17 @@ namespace Inworld.Sample
         void Start()
         {
             InworldController.Instance.OnStateChanged += OnControllerStatusChanged;
-            m_CanvasPosition = m_GlobalChatCanvas.GetComponent<RectTransform>();
             m_GlobalChatCanvas.SetActive(false);
         }
         void Update()
         {
             if (Input.GetKeyUp(KeyCode.BackQuote))
             {
-                Debug.Log(m_GlobalChatCanvas.GetComponent<RectTransform>().anchoredPosition);
                 m_GlobalChatCanvas.SetActive(!m_GlobalChatCanvas.activeSelf);
                 if (m_CameraController)
                     m_CameraController.enabled = !m_GlobalChatCanvas.activeSelf;
                 if (m_TriggerCanvas)
                     m_TriggerCanvas.SetActive(!m_TriggerCanvas.activeSelf);
-
-                Debug.Log(m_GlobalChatCanvas.GetComponent<RectTransform>().anchoredPosition);
-                m_CanvasPosition.anchoredPosition = m_CanvasPosition.anchoredPosition;
                 //permet au playerMovement de savoir si le chat est ouvert ou pas.
                 m_chatIsOpened = m_GlobalChatCanvas.activeSelf;
                 //Debug.Log(m_chatIsOpened ? "le chat est open" : "le chat est fermé");
