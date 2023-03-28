@@ -14,12 +14,12 @@ public class PlayerMovement : MonoBehaviour
         set
         {
 			isMoving = value;
-			animator.SetBool("IsMoving", isMoving);
+			animator.SetBool("isWalking", isMoving);
         }
     }
 
 	public float runSpeed = 5f;
-	Vector2 direction;
+	Vector2 direction = new Vector2(0,-1);
 	Rigidbody2D rb;
 	Animator animator;
 	bool isMoving = false;
@@ -36,6 +36,13 @@ public class PlayerMovement : MonoBehaviour
     {
 		direction.x = Input.GetAxisRaw("Horizontal");
 		direction.y = Input.GetAxisRaw("Vertical");
+
+		if(direction != Vector2.zero)
+        {
+			animator.SetFloat("Vertical", direction.y);
+			animator.SetFloat("Horizontal", direction.x);
+			
+        }
 		//animator.SetFloat("Speed", Mathf.Abs(direction.magnitude * runSpeed));
 
 		//bool flipped = direction.x < 0;
@@ -47,16 +54,20 @@ public class PlayerMovement : MonoBehaviour
 		// Move our character
 		if (!Inworld.Sample.InworldPlayer.m_chatIsOpened)
 		{
-			if(direction != Vector2.zero)
-            {
+			if (direction != Vector2.zero)
 				rb.MovePosition(rb.position + direction.normalized * runSpeed * Time.fixedDeltaTime);
-				spriteRenderer.flipX = direction.x > 0 ? false : (direction.x < 0 ? true : spriteRenderer.flipX);
-				IsMoving = true;
-            }
-            else
-            {
-				IsMoving = false;
-            }
+
+			IsMoving = direction != Vector2.zero ? true : false;
+			//if(direction != Vector2.zero)
+			//         {
+			//	rb.MovePosition(rb.position + direction.normalized * runSpeed * Time.fixedDeltaTime);
+			//	spriteRenderer.flipX = direction.x > 0 ? false : (direction.x < 0 ? true : spriteRenderer.flipX);
+			//	IsMoving = true;
+			//         }
+			//         else
+			//         {
+			//	IsMoving = false;
+			//         }
 		}
 	}
 }
