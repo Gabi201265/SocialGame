@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 	public float runSpeed = 5f;
-	Vector2 direction = new Vector2(0,-1);
+	Vector2 direction;
 	Rigidbody2D rb;
 	Animator animator;
 	bool isMoving = false;
@@ -37,12 +37,13 @@ public class PlayerMovement : MonoBehaviour
 		direction.x = Input.GetAxisRaw("Horizontal");
 		direction.y = Input.GetAxisRaw("Vertical");
 
-		if(direction != Vector2.zero)
-        {
-			animator.SetFloat("Vertical", direction.y);
+		if (direction != Vector2.zero)
+		{
+
 			animator.SetFloat("Horizontal", direction.x);
-			
-        }
+			animator.SetFloat("Vertical", direction.y);
+
+		}
 		//animator.SetFloat("Speed", Mathf.Abs(direction.magnitude * runSpeed));
 
 		//bool flipped = direction.x < 0;
