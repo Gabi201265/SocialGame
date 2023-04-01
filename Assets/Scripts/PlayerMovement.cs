@@ -23,13 +23,11 @@ public class PlayerMovement : MonoBehaviour
 	Rigidbody2D rb;
 	Animator animator;
 	bool isMoving = false;
-	SpriteRenderer spriteRenderer;
 
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
     private void Update()
@@ -42,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
 			animator.SetFloat("Horizontal", direction.x);
 			animator.SetFloat("Vertical", direction.y);
+
 
 		}
 		//animator.SetFloat("Speed", Mathf.Abs(direction.magnitude * runSpeed));
