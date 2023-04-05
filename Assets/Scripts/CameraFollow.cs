@@ -23,8 +23,8 @@ public class CameraFollow : MonoBehaviour
     {
         if (target)
         {
-            transform.position = Vector3.Lerp(target.position, target.position,0.1f)+new Vector3(0,0,-15);
-            transform.position = new Vector3(Mathf.Clamp(transform.position.x, areaBox.bounds.min.x + halfWidth, areaBox.bounds.max.x - halfWidth), Mathf.Clamp(transform.position.y, areaBox.bounds.min.y + halfHeight, areaBox.bounds.max.y - halfHeight),-15);        
+            transform.position = Vector3.Lerp(target.position, target.position, 0.1f) + new Vector3(0, 0, -15);
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, areaBox.bounds.min.x + halfWidth, areaBox.bounds.max.x - halfWidth), Mathf.Clamp(transform.position.y, areaBox.bounds.min.y + halfHeight, areaBox.bounds.max.y - halfHeight), -15);
         }
     }
 }
