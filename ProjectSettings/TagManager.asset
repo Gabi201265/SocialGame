@@ -39,18 +39,30 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 108838589
+    locked: 0
+  - name: TileMapCollision
+    uniqueID: 143877491
+    locked: 0
+  - name: BelowUnderBeneathCharacter
+    uniqueID: 646992911
+    locked: 0
+  - name: UnderBeneathCharacter
+    uniqueID: 2507169953
+    locked: 0
+  - name: BeneathCharacter
+    uniqueID: 4076776191
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: 
-    uniqueID: 108838589
-    locked: 0
-  - name: 
+  - name: OnCharacter
     uniqueID: 1148579171
     locked: 0
-  - name: 
-    uniqueID: 143877491
-    locked: 0
-  - name: 
+  - name: OverOnCharacter
     uniqueID: 1424806553
+    locked: 0
+  - name: AboveOverOnCharacter
+    uniqueID: 2614096383
     locked: 0
