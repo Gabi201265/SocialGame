@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 	public float runSpeed = 5f;
 	Vector2 direction;
 	Rigidbody2D rb;
+
 	Animator animator;
 	bool isMoving = false;
 
