@@ -245,6 +245,7 @@ GameObject:
   - component: {fileID: 4413897601230180966}
   - component: {fileID: 6873672906263148362}
   - component: {fileID: 5611332227323763290}
+  - component: {fileID: 8466084778684727991}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -368,6 +369,28 @@ CircleCollider2D:
   m_Offset: {x: -0.00941658, y: 0.27649403}
   serializedVersion: 2
   m_Radius: 0.27551937
+--- !u!114 &8466084778684727991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5118729529205443546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d2e4418c1a374a429e93e4f36bb763d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGirl: 0
+  body: 0
+  hair: 0
+  shirt: 0
+  pant: 0
+  m_skinTone:
+  - {r: 1, g: 0.88235295, b: 0.7372549, a: 1}
+  - {r: 0.91764706, g: 0.65882355, b: 0.4627451, a: 1}
+  - {r: 0.99607843, g: 0.8392157, b: 0.627451, a: 1}
+  - {r: 0.45882353, g: 0.23921569, b: 0.16470589, a: 1}
 --- !u!1 &5176824409641084951
 GameObject:
   m_ObjectHideFlags: 0
