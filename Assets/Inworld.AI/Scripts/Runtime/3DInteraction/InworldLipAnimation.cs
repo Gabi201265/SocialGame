@@ -1,17 +1,27 @@
-﻿using Inworld.Audio;
+﻿/*************************************************************************************************
+* Copyright 2022 Theai, Inc. (DBA Inworld)
+*
+* Use of this source code is governed by the Inworld.ai Software Development Kit License Agreement
+* that can be found in the LICENSE.md file or at https://www.inworld.ai/sdk-license
+*************************************************************************************************/
+using Inworld.Audio;
 using Inworld.Grpc;
 using System.Collections.Concurrent;
 using System.Linq;
 using UnityEngine;
-using PacketId = Inworld.Packets.PacketId;
 namespace Inworld.Model
 {
     public class InworldLipAnimation : MonoBehaviour
     {
         const int k_VisemeLength = 15;
         [SerializeField] FacialAnimationData m_FaceAnimData;
-        [SerializeField] bool m_CustomModel;
         [Range(0, 1)][SerializeField] float m_LipExpression = 0.7f;
+        [Header("For custom models:")]
+        [Tooltip("Find the first viseme in the blendshape of your model. NOTE: Your viseme variables should be continuous and starting from Sil to U")]
+        [SerializeField] string m_VisemeSil = "viseme_sil";
+        [Tooltip("If your custom model is not working, try toggle this on/off")]
+        [SerializeField] bool m_CustomModel;
+
         Vector2 m_CurrViseme = Vector2.zero;
         Vector2 m_LastViseme = Vector2.zero;
         float m_PassedTime;
@@ -43,17 +53,17 @@ namespace Inworld.Model
         }
         void OnEnable()
         {
-            if (!Character)
+            if (!Character || Character.Interaction is not AudioInteraction audioInteraction)
                 return;
-            Character.OnBeginSpeaking.AddListener(OnAudioStarted);
-            Character.OnFinishedSpeaking.AddListener(OnAudioFinished); 
+            audioInteraction.OnAudioStarted += OnAudioStarted;
+            audioInteraction.OnAudioEnd += OnAudioFinished;
         }
         void OnDisable()
         {
-            if (!Character)
+            if (!Character || Character.Interaction is not AudioInteraction audioInteraction)
                 return;
-            Character.OnBeginSpeaking.RemoveListener(OnAudioStarted);
-            Character.OnFinishedSpeaking.RemoveListener(OnAudioFinished);
+            audioInteraction.OnAudioStarted -= OnAudioStarted;
+            audioInteraction.OnAudioEnd -= OnAudioFinished;
         }
 
         public void Init()
@@ -129,17 +139,17 @@ namespace Inworld.Model
                 return;
             for (int i = 0; i < m_Skin.sharedMesh.blendShapeCount; i++)
             {
-                if (m_Skin.sharedMesh.GetBlendShapeName(i) != "viseme_sil")
+                if (m_Skin.sharedMesh.GetBlendShapeName(i) != m_VisemeSil)
                     continue;
                 m_VisemeIndex = i;
                 Debug.Log($"Find Viseme Index {m_VisemeIndex}");
                 break;
             }
         }
-        void OnAudioStarted(PacketId ID)
+        void OnAudioStarted()
         {
             _Reset();
-            if (!Character || Character.Interaction is not AudioInteraction audioInteraction)
+            if (!Character || Character.Interaction is not AudioInteraction audioInteraction || audioInteraction.CurrentChunk == null)
                 return;
             foreach (AdditionalPhonemeInfo phoneme in audioInteraction.CurrentChunk.PhonemeInfo)
             {

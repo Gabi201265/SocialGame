@@ -6,11 +6,8 @@
 *************************************************************************************************/
 using Inworld.Grpc;
 using Inworld.Util;
-using System;
 using UnityEngine;
 using InworldPacket = Inworld.Packets.InworldPacket;
-using PacketId = Inworld.Packets.PacketId;
-using Random = UnityEngine.Random;
 namespace Inworld.Model
 {
     /// <summary>
@@ -124,11 +121,13 @@ namespace Inworld.Model
                     break;
             }
         }
-        public void Init()
+        public bool Init()
         {
             Animator ??= GetComponent<Animator>();
             Character ??= GetComponent<InworldCharacter>();
+            return Animator && Character;
         }
+
         #region Private Variables
         static readonly int s_Emotion = Animator.StringToHash("Emotion");
         static readonly int s_Gesture = Animator.StringToHash("Gesture");
@@ -151,17 +150,18 @@ namespace Inworld.Model
         #region Monobehavior Functions
         void Awake()
         {
-            Init();
+            enabled = Init();
         }
         void OnEnable()
         {
             InworldController.Instance.OnCharacterChanged += OnCharacterChanged;
             InworldController.Instance.OnStateChanged += OnStatusChanged;
             InworldController.Instance.OnPacketReceived += OnPacketEvents;
+            Animator.enabled = false;
             if (!Character)
                 return;
             Character.OnBeginSpeaking.AddListener(OnAudioStarted);
-            Character.OnFinishedSpeaking.AddListener(OnAudioFinished); 
+            Character.OnFinishedSpeaking.AddListener(OnAudioFinished);
         }
         void OnDisable()
         {
@@ -171,9 +171,10 @@ namespace Inworld.Model
                 InworldController.Instance.OnStateChanged -= OnStatusChanged;
                 InworldController.Instance.OnPacketReceived -= OnPacketEvents;
             }
+            Animator.enabled = false;
             if (!Character)
                 return;
-            Character.OnBeginSpeaking.RemoveListener(OnAudioStarted); 
+            Character.OnBeginSpeaking.RemoveListener(OnAudioStarted);
             Character.OnFinishedSpeaking.RemoveListener(OnAudioFinished);
         }
         #endregion
@@ -184,9 +185,11 @@ namespace Inworld.Model
             if (oldCharacter == Character)
             {
                 HandleMainStatus(AnimMainStatus.Goodbye);
+                Animator.enabled = false;
             }
             else if (newCharacter == Character)
             {
+                Animator.enabled = true;
                 HandleMainStatus(AnimMainStatus.Hello);
             }
         }
@@ -211,7 +214,7 @@ namespace Inworld.Model
             if (newStatus == ControllerStates.Connected)
                 HandleMainStatus(AnimMainStatus.Neutral);
         }
-        void OnAudioStarted(PacketId id)
+        void OnAudioStarted()
         {
             HandleMainStatus(AnimMainStatus.Talking);
         }

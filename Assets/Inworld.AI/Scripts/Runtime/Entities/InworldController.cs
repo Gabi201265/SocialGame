@@ -13,6 +13,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using AudioChunk = Inworld.Packets.AudioChunk;
 using ControlEvent = Inworld.Packets.ControlEvent;
@@ -20,40 +23,13 @@ using GrpcPacket = Inworld.Grpc.InworldPacket;
 using InworldPacket = Inworld.Packets.InworldPacket;
 using Random = UnityEngine.Random;
 using Routing = Inworld.Packets.Routing;
+using TextEvent = Inworld.Packets.TextEvent;
 
 
 namespace Inworld
 {
     public class InworldController : SingletonBehavior<InworldController>
     {
-        #region Callbacks
-        // Translate Runtime Events to public Controller Events.
-        async void OnRuntimeEvents(RuntimeStatus status, string msg)
-        {
-            switch (status)
-            {
-                case RuntimeStatus.InitSuccess:
-                    State = ControllerStates.Initialized;
-                    if (m_Data != null)
-                        await LoadScene(m_Data);
-                    else
-                    {
-                        // YAN: Try load the first character in its children.
-                        await LoadCharacter(GetFirstChild(true));
-                    }
-                    break;
-                case RuntimeStatus.InitFailed:
-                    Debug.LogError(msg);
-                    State = ControllerStates.InitFailed;
-                    break;
-                case RuntimeStatus.LoadSceneFailed:
-                    Debug.LogError(msg);
-                    State = ControllerStates.Error;
-                    break;
-            }
-        }
-        #endregion
-
         #region Inspector Variables
         [SerializeField] bool m_AutoStart;
         [SerializeField] InworldSceneData m_Data;
@@ -71,11 +47,15 @@ namespace Inworld
         ControllerStates m_State = ControllerStates.Idle;
         InworldClient m_Client;
         InworldCharacter m_CurrentCharacter;
+        InworldCharacter m_LastCharacter;
         string m_CurrentRecordingID;
         float m_BackOffTime = 0.2f;
         float m_CurrentCountDown;
         string m_WaitingRecordingID;
         string m_TTSInteractionID;
+        bool m_StartToQuit;
+        Dictionary<string, string> m_CharacterRegistration = new Dictionary<string, string>();
+        List<InworldCharacter> m_Characters = new List<InworldCharacter>();
         #endregion
 
         #region Properties
@@ -97,8 +77,12 @@ namespace Inworld
                 if (!Instance)
                     return;
                 AudioCapture capture = Instance.m_Capture;
-                if (capture)
-                    capture.IsCapturing = value;
+                if (!capture)
+                    return;
+                if (value)
+                    capture.StartRecording();
+                else
+                    capture.StopRecording();
             }
         }
         /// <summary>
@@ -126,25 +110,23 @@ namespace Inworld
             get => Instance.m_InworldPlayer;
             set => Instance.m_InworldPlayer = value;
         }
-
+        public static List<InworldCharacter> Characters => Instance.m_Characters;
         /// <summary>
         ///     Get/Set the current Inworld Character. Could be Null.
         ///     Usually it's set by CheckPriority().
         /// </summary>
         public InworldCharacter CurrentCharacter
         {
-            get => m_CurrentCharacter ? m_CurrentCharacter : Characters.Count > 0 ? Characters[0] : null;
+            get => m_CurrentCharacter;
             private set
             {
-                if (m_CurrentCharacter != value)
-                    OnCharacterChanged?.Invoke(m_CurrentCharacter, value);
+                if (m_CurrentCharacter == value)
+                    return;
+                m_LastCharacter = m_CurrentCharacter;
                 m_CurrentCharacter = value;
+                OnCharacterChanged?.Invoke(m_LastCharacter, m_CurrentCharacter);
             }
         }
-        /// <summary>
-        ///     Get/Set all the Characters this Inworld Scene contains.
-        /// </summary>
-        public List<InworldCharacter> Characters { get; private set; }
         /// <summary>
         ///     Check if Runtime session token has been received
         ///     and Inworld Client has been initialized.
@@ -186,16 +168,24 @@ namespace Inworld
         void Awake()
         {
             m_Client = new InworldClient();
-            Characters ??= new List<InworldCharacter>();
             InworldAI.User.LoadData();
         }
         void Start()
         {
+            if (InworldAI.Settings.SaveConversation && PlayerPrefs.HasKey(CurrentScene.fullName))
+                m_Client.LastState = PlayerPrefs.GetString(CurrentScene.fullName);
             if (m_AutoStart)
                 Init();
         }
         void Update()
         {
+            if (m_StartToQuit && State == ControllerStates.Idle)
+            {
+                Application.Quit();
+#if UNITY_EDITOR
+                EditorApplication.isPlaying = false;
+#endif
+            }
             if (State == ControllerStates.LostConnect)
             {
                 m_CurrentCountDown += Time.deltaTime;
@@ -211,9 +201,6 @@ namespace Inworld
                 m_WaitingRecordingID = null;
                 _StartAudioCapture(m_CurrentRecordingID);
             }
-
-            if (Input.GetKeyUp(KeyCode.Escape))
-                Application.Quit();
         }
         void OnDisable()
         {
@@ -229,7 +216,29 @@ namespace Inworld
                 m_Capture.StopRecording();
         }
         #endregion
-
+        
+        #region Callbacks
+        // Translate Runtime Events to public Controller Events.
+        async void OnRuntimeEvents(RuntimeStatus status, string msg)
+        {
+            switch (status)
+            {
+                case RuntimeStatus.InitSuccess:
+                    State = ControllerStates.Initialized;
+                    await LoadScene();
+                    break;
+                case RuntimeStatus.InitFailed:
+                    Debug.LogError(msg);
+                    State = ControllerStates.InitFailed;
+                    break;
+                case RuntimeStatus.LoadSceneFailed:
+                    Debug.LogError(msg);
+                    State = ControllerStates.Error;
+                    break;
+            }
+        }
+        #endregion
+        
         #region Private Functions
         void _SetState(ControllerStates state)
         {
@@ -237,73 +246,6 @@ namespace Inworld
                 return;
             m_State = state;
             OnStateChanged?.Invoke(state);
-        }
-        void _StartAudioCapture(string characterID)
-        {
-            m_CurrentRecordingID = characterID;
-            m_Client.StartAudio(Routing.FromPlayerToAgent(characterID));
-            m_Capture.IsCapturing = true; //Isenabled
-            InworldAI.Log("Capture started.");
-        }
-        void _BindCharacterFromServer
-        (
-            InworldCharacter character,
-            LoadSceneResponse.Types.Agent characterInfo
-        )
-        {
-            if (Characters == null)
-                Characters = new List<InworldCharacter>();
-            Characters.Clear();
-            Characters.Add(character);
-            InworldCharacterData data = character.Data;
-            if (!data)
-                data = ScriptableObject.CreateInstance<InworldCharacterData>();
-            data.characterID = characterInfo.AgentId;
-            data.characterName = characterInfo.GivenName;
-            data.brain = characterInfo.BrainName;
-            data.modelUri = characterInfo.CharacterAssets.RpmModelUri;
-            data.posUri = characterInfo.CharacterAssets.RpmImageUriPosture;
-            data.previewImgUri = characterInfo.CharacterAssets.RpmImageUriPortrait;
-            InworldAI.Log($"Register {character.CharacterName}: {characterInfo.AgentId}");
-            character.LoadCharacter(data);
-        }
-
-        void _ListCharactersFromServer(List<LoadSceneResponse.Types.Agent> characters)
-        {
-            Dictionary<string, string> responseData = new Dictionary<string, string>();
-            foreach (LoadSceneResponse.Types.Agent characterInfo in characters)
-            {
-                responseData[characterInfo.BrainName] = characterInfo.AgentId;
-            }
-            // Yan: They may return more Characters from server.
-            //      But we only need the Characters in Unity Scene to register.
-            if (characters.Count == 0)
-            {
-                InworldAI.LogError("Cannot Find Characters. Need Init first.");
-                State = ControllerStates.Error;
-                return;
-            }
-            foreach (InworldCharacter character in Characters.Where(character => responseData.ContainsKey(character.BrainName)))
-            {
-                InworldAI.Log($"Register {character.CharacterName}: {responseData[character.BrainName]}");
-                character.RegisterLiveSession(responseData[character.BrainName]);
-            }
-        }
-        void _GetIncomingEvents()
-        {
-            while (m_Client.GetIncomingEvent(out InworldPacket packet))
-            {
-                OnPacketReceived?.Invoke(packet);
-            }
-
-            if (m_Client.GetAudioChunk(out AudioChunk audioChunkEvent))
-            {
-                OnPacketReceived?.Invoke(audioChunkEvent);
-            }
-            if (m_Client.GetAnimationChunk(out AnimationChunk animChunkEvent))
-            {
-                OnPacketReceived?.Invoke(animChunkEvent);
-            }
         }
         void _SelectCharacter()
         {
@@ -315,7 +257,61 @@ namespace Inworld
                 targetCharacter = iwChar;
             }
             CurrentCharacter = targetCharacter;
+       }
+        void _StartAudioCapture(string characterID)
+        {
+            m_CurrentRecordingID = characterID;
+            m_Client.StartAudio(Routing.FromPlayerToAgent(characterID));
+            m_Capture.StartRecording(); 
+            InworldAI.Log("Capture started.");
         }
+        string _GetFullNameToLoad(string fullNameToLoad)
+        {
+            string strResult = "";
+            if (string.IsNullOrEmpty(fullNameToLoad))
+            {
+                if (m_Data != null)
+                    strResult = m_Data.fullName;
+                else
+                {
+                    InworldCharacter firstChild = GetFirstChild(true);
+                    if (firstChild)
+                    {
+                        strResult = firstChild.BrainName;
+                    }
+                }
+            }
+            return strResult;
+        }
+
+
+        void _ListCharactersFromServer(List<LoadSceneResponse.Types.Agent> characters)
+        {
+            foreach (LoadSceneResponse.Types.Agent characterInfo in characters)
+            {
+                m_CharacterRegistration[characterInfo.BrainName] = characterInfo.AgentId;
+            }
+            if (characters.Count != 0)
+                return;
+            InworldAI.LogError("Cannot Find Characters. Need Init first.");
+            State = ControllerStates.Error;
+        }
+        void _GetIncomingEvents()
+        {
+            while (m_Client.GetIncomingEvent(out InworldPacket packet))
+            {
+                OnPacketReceived?.Invoke(packet);
+            }
+            if (m_Client.GetAudioChunk(out AudioChunk audioChunkEvent))
+            {
+                OnPacketReceived?.Invoke(audioChunkEvent);
+            }
+            if (m_Client.GetAnimationChunk(out AnimationChunk animChunkEvent))
+            {
+                OnPacketReceived?.Invoke(animChunkEvent);
+            }
+        }
+
         // Handling events coming from client.
         IEnumerator InteractionCoroutine()
         {
@@ -324,7 +320,7 @@ namespace Inworld
                 _GetIncomingEvents();
                 _SelectCharacter();
                 // Client stopped.
-                if (!m_Client.IsInteracting && !m_Client.Errors.IsEmpty)
+                if (!m_Client.SessionStarted && !m_Client.Errors.IsEmpty)
                 {
                     while (m_Client.Errors.TryDequeue(out Exception exception))
                     {
@@ -389,78 +385,65 @@ namespace Inworld
             m_Client.RuntimeEvent += OnRuntimeEvents;
             m_Client.GetAppAuth();
         }
-
         /// <summary>
-        ///     Start session with target InworldCharacter directly
-        ///     If success, it'll create a default InworldScene of that character,
-        ///     with a valid SessionKey and character's AgentID.
+        /// Start Recording
         /// </summary>
-        /// <param name="character">A GameObject or Prefab that has InworldCharacter Component</param>
-        public async Task LoadCharacter(InworldCharacter character)
+        /// <param name="autoPush">If autopush, whenever you finished talking, the data would be sent to server.
+        /// by default is true</param>
+        public void StartRecording(bool autoPush = true)
         {
-            try
-            {
-                Debug.Log($"InworldController Connecting {character.BrainName}.");
-
-                if (character == null || string.IsNullOrEmpty(character.BrainName))
-                {
-                    Debug.LogError("Please attach a correct Inworld Character.");
-                    return;
-                }
-                Debug.Log($"Current State: {State}");
-                switch (State)
-                {
-                    case ControllerStates.Initialized:
-                    {
-                        State = ControllerStates.Connecting;
-                        LoadSceneResponse response = await m_Client.LoadScene(character.BrainName);
-                        if (response != null && response.Agents.Count == 1)
-                        {
-                            _BindCharacterFromServer(character, response.Agents[0]);
-                        }
-                        _StartSession();
-                        break;
-                    }
-                    case ControllerStates.LostConnect:
-                        Debug.Log("Start Reconnecting");
-                        if (m_AutoStart)
-                            _StartSession();
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                State = ControllerStates.Error;
-                Debug.LogError(e.ToString());
-                //CurrentScene.Event.Invoke(InworldSceneStatus.LoadSceneFailed, null);
-            }
+            AudioCapture capture = m_Capture;
+            if (!capture)
+                return;
+            capture.StartRecording(autoPush);
         }
         /// <summary>
-        ///     Start session with a InworldScene
-        ///     If success, Set current InworldScene to this,
-        ///     with a valid SessionKey and a list of its InworldCharacters with valid AgentID.
+        /// Stop Recording
         /// </summary>
-        /// <param name="inworldSceneData">The InworldScene to load</param>
-        public async Task LoadScene(InworldSceneData inworldSceneData)
+        public void StopRecording()
         {
+            AudioCapture capture = m_Capture;
+            if (!capture)
+                return;
+            capture.StopRecording();
+        }
+        /// <summary>
+        /// Manually Push Audio. Called when autoPush of AudioCapture is false
+        /// </summary>
+        public void PushAudio()
+        {
+            AudioCapture capture = m_Capture;
+            if (!capture)
+                return;
+            capture.PushAudio();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public async Task LoadScene(string sceneOrCharFullName = "")
+        {
+            string fullNameToLoad = _GetFullNameToLoad(sceneOrCharFullName);
+            if (string.IsNullOrEmpty(fullNameToLoad))
+            {
+                Debug.LogError("Please attach a correct Inworld Scene or a correct Inworld Character.");
+                return;
+            }
             try
             {
-                InworldAI.Log($"InworldController Connecting {inworldSceneData.fullName}.");
-
-                if (inworldSceneData == null || string.IsNullOrEmpty(inworldSceneData.fullName))
-                {
-                    Debug.LogError("Please attach a correct Inworld Scene.");
-                    return;
-                }
+                InworldAI.Log($"InworldController Connecting {fullNameToLoad}.");
                 switch (State)
                 {
                     case ControllerStates.Initialized:
                     {
                         State = ControllerStates.Connecting;
-                        LoadSceneResponse response = await m_Client.LoadScene(inworldSceneData.fullName);
+                        LoadSceneResponse response = await m_Client.LoadScene(fullNameToLoad);
                         if (response != null)
                         {
                             _ListCharactersFromServer(response.Agents.ToList());
+                            if (InworldAI.Settings.SaveConversation)
+                            {
+                                _LoadPreviousData(response);
+                            }
                             _StartSession();
                         }
                         break;
@@ -478,6 +461,25 @@ namespace Inworld
                 Debug.LogError(e);
             }
         }
+
+        void _LoadPreviousData(LoadSceneResponse response)
+        {
+            if (response.PreviousState == null)
+                return;
+            foreach (PreviousState.Types.StateHolder stateHolder in response.PreviousState.StateHolders)
+            {
+                if (stateHolder.Packets.Count != 0)
+                    InworldAI.Log(" ======= Previous Dialog: ======= ");
+                foreach (GrpcPacket packet in stateHolder.Packets)
+                {
+                    TextEvent packets = m_Client.ResolvePreviousPackets(packet);
+                    if (packets != null)
+                    {
+                        InworldAI.Log($">>>> {packet.Text.Text}");
+                    }
+                }
+            }
+        }
         /// <summary>
         ///     Reconnect
         /// </summary>
@@ -491,16 +493,14 @@ namespace Inworld
         /// </summary>
         public async Task Disconnect()
         {
-            foreach (InworldCharacter iwChar in Characters)
-            {
-                EndAudioCapture(iwChar.ID);
-            }
-
+            EndAudioCapture(CurrentCharacter.ID);
             if (m_Client != null)
                 await m_Client.EndSession();
 
             StopCoroutine(nameof(InteractionCoroutine));
             CurrentCharacter = null;
+            if (InworldAI.Settings.SaveConversation)
+                PlayerPrefs.SetString(CurrentScene.fullName, m_Client.LastState);
             State = ControllerStates.Idle;
         }
 
@@ -538,19 +538,14 @@ namespace Inworld
             {
                 m_Client.EndAudio(Routing.FromPlayerToAgent(m_CurrentRecordingID));
                 if (m_Capture)
-                    m_Capture.IsCapturing = false; //IsEnabled
+                    m_Capture.IsCapturing = false; 
                 m_CurrentRecordingID = null;
                 InworldAI.Log("Capture ended.");
             }
             else if (m_WaitingRecordingID == characterID)
                 m_WaitingRecordingID = null;
         }
-        public void RegisterCharacter(InworldCharacter character)
-        {
-            Characters ??= new List<InworldCharacter>();
-            if (!Characters.Contains(character))
-                Characters.Add(character);
-        }
+
         public InworldCharacter GetFirstChild(bool isActive)
         {
             foreach (Transform child in transform)
@@ -561,5 +556,14 @@ namespace Inworld
             return null;
         }
         #endregion
+
+        public void StartTerminate()
+        {
+            m_StartToQuit = true;
+#pragma warning disable CS4014
+            Disconnect();
+#pragma warning restore CS4014
+        }
+        public string GetLiveSessionID(string brainName) => m_CharacterRegistration.ContainsKey(brainName) ? m_CharacterRegistration[brainName] : "";
     }
 }

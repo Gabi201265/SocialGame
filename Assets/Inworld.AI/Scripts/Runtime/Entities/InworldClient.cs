@@ -4,6 +4,7 @@
 * Use of this source code is governed by the Inworld.ai Software Development Kit License Agreement
 * that can be found in the LICENSE.md file or at https://www.inworld.ai/sdk-license
 *************************************************************************************************/
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Inworld.Grpc;
@@ -12,7 +13,9 @@ using Inworld.Runtime;
 using Inworld.Util;
 using System;
 using System.Collections.Concurrent;
+using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using AudioChunk = Inworld.Packets.AudioChunk;
 using ControlEvent = Inworld.Grpc.ControlEvent;
@@ -65,9 +68,10 @@ namespace Inworld
 
         #region Properties
         internal ConcurrentQueue<Exception> Errors { get; } = new ConcurrentQueue<Exception>();
-        internal bool IsInteracting { get; private set; }
+        internal bool SessionStarted { get; private set; }
         internal bool HasInit => !m_InworldAuth.IsExpired;
         internal string SessionID => m_InworldAuth?.SessionID ?? "";
+        internal string LastState { get; set; }
         bool IsSessionInitialized => m_SessionKey.Length != 0;
         Timestamp Now => Timestamp.FromDateTime(DateTime.UtcNow);
         #endregion
@@ -92,7 +96,7 @@ namespace Inworld
         #region Private Functions
         internal void GetAppAuth()
         {
-#if UNITY_EDITOR && VSP
+#if UNITY_EDITOR
             if (!string.IsNullOrEmpty(InworldAI.User.Account))
                 VSAttribution.VSAttribution.SendAttributionEvent("Login Runtime", InworldAI.k_CompanyName, InworldAI.User.Account);
 #endif
@@ -101,6 +105,7 @@ namespace Inworld
         }
         internal async Task<LoadSceneResponse> LoadScene(string sceneName)
         {
+
             LoadSceneRequest lsRequest = new LoadSceneRequest
             {
                 Name = sceneName,
@@ -108,11 +113,25 @@ namespace Inworld
                 User = InworldAI.User.Request,
                 Client = InworldAI.User.Client
             };
+            if (!string.IsNullOrEmpty(LastState))
+            {
+                lsRequest.SessionContinuation = new SessionContinuation
+                {
+                    PreviousState = ByteString.FromBase64(LastState)
+                };
+            }
             try
             {
                 LoadSceneResponse response = await m_WorldEngineClient.LoadSceneAsync(lsRequest, m_Header);
                 // Yan: They somehow use {WorkSpace}:{sessionKey} as "sessionKey" now. Need to remove the first part.
                 m_SessionKey = response.Key.Split(':')[1];
+                if (response.PreviousState != null)
+                {
+                    foreach (PreviousState.Types.StateHolder stateHolder in response.PreviousState.StateHolders)
+                    {
+                        InworldAI.Log($"Received Previous Packets: {stateHolder.Packets.Count}");
+                    }
+                }
                 m_Header.Add("Authorization", $"Bearer {m_SessionKey}");
                 RuntimeEvent?.Invoke(RuntimeStatus.LoadSceneComplete, m_SessionKey);
                 return response;
@@ -127,7 +146,7 @@ namespace Inworld
         internal void StartAudio(Routing routing)
         {
             InworldAI.Log("Start Audio Event");
-            if (IsInteracting)
+            if (SessionStarted)
                 m_CurrentConnection?.outgoingEventsQueue.Enqueue
                 (
                     new GrpcPacket
@@ -145,7 +164,7 @@ namespace Inworld
         // Marks session end.
         internal void EndAudio(Routing routing)
         {
-            if (IsInteracting)
+            if (SessionStarted)
                 m_CurrentConnection?.outgoingEventsQueue.Enqueue
                 (
                     new GrpcPacket
@@ -163,7 +182,7 @@ namespace Inworld
         // Sends audio chunk to server.
         internal void SendAudio(AudioChunk audioEvent)
         {
-            if (IsInteracting)
+            if (SessionStarted)
                 m_CurrentConnection?.outgoingEventsQueue.Enqueue(audioEvent.ToGrpc());
         }
         internal bool GetAudioChunk(out AudioChunk chunk)
@@ -186,7 +205,7 @@ namespace Inworld
         }
         internal void SendEvent(InworldPacket e)
         {
-            if (IsInteracting)
+            if (SessionStarted)
                 m_CurrentConnection?.outgoingEventsQueue.Enqueue(e.ToGrpc());
         }
         internal bool GetIncomingEvent(out InworldPacket incomingEvent)
@@ -208,7 +227,7 @@ namespace Inworld
             Connection connection = new Connection();
             m_CurrentConnection = connection;
 
-            IsInteracting = true;
+            SessionStarted = true;
             try
             {
                 using (m_StreamingCall = m_WorldEngineClient.Session(m_Header))
@@ -218,7 +237,7 @@ namespace Inworld
                     (
                         async () =>
                         {
-                            while (IsInteracting)
+                            while (SessionStarted)
                             {
                                 bool next;
                                 try
@@ -240,46 +259,7 @@ namespace Inworld
                                 }
                                 if (next)
                                 {
-                                    GrpcPacket response = m_StreamingCall.ResponseStream.Current;
-                                    if (response.DataChunk != null)
-                                    {
-                                        switch (response.DataChunk.Type)
-                                        {
-                                            case DataChunk.Types.DataType.Audio:
-                                                connection.incomingAudioQueue.Enqueue(new AudioChunk(response));
-                                                break;
-                                            case DataChunk.Types.DataType.Animation:
-                                                connection.incomingAnimationQueue.Enqueue(new AnimationChunk(response));
-                                                break;
-                                            default:
-                                                InworldAI.LogError($"Unsupported incoming event: {response}");
-                                                break;
-                                        }
-                                    }
-                                    else if (response.Text != null)
-                                    {
-                                        connection.incomingInteractionsQueue.Enqueue(new TextEvent(response));
-                                    }
-                                    else if (response.Gesture != null)
-                                    {
-                                        connection.incomingInteractionsQueue.Enqueue(new GestureEvent(response));
-                                    }
-                                    else if (response.Control != null)
-                                    {
-                                        connection.incomingInteractionsQueue.Enqueue(new Packets.ControlEvent(response));
-                                    }
-                                    else if (response.Emotion != null)
-                                    {
-                                        connection.incomingInteractionsQueue.Enqueue(new EmotionEvent(response));
-                                    }
-                                    else if (response.Custom != null)
-                                    {
-                                        connection.incomingInteractionsQueue.Enqueue(new CustomEvent(response));
-                                    }
-                                    else
-                                    {
-                                        InworldAI.LogError($"Unsupported incoming event: {response}");
-                                    }
+                                    _ResolveGRPCPackets(m_StreamingCall.ResponseStream.Current);
                                 }
                                 else
                                 {
@@ -293,14 +273,14 @@ namespace Inworld
                     (
                         async () =>
                         {
-                            while (IsInteracting)
+                            while (SessionStarted)
                             {
                                 Task.Delay(100).Wait();
                                 // Sending all outgoing events.
                                 GrpcPacket e;
                                 while (connection.outgoingEventsQueue.TryDequeue(out e))
                                 {
-                                    if (IsInteracting)
+                                    if (SessionStarted)
                                     {
                                         await m_StreamingCall.RequestStream.WriteAsync(e);
                                     }
@@ -313,20 +293,70 @@ namespace Inworld
             }
             catch (Exception e)
             {
-                IsInteracting = false;
+                SessionStarted = false;
                 Errors.Enqueue(e);
             }
             finally
             {
-                IsInteracting = false;
+                SessionStarted = false;
             }
         }
+        internal TextEvent ResolvePreviousPackets(GrpcPacket response) => response.Text != null ? new TextEvent(response) : null;
+
+        void _ResolveGRPCPackets(GrpcPacket response)
+        {
+            m_CurrentConnection ??= new Connection();
+            if (response.DataChunk != null)
+            {
+                switch (response.DataChunk.Type)
+                {
+                    case DataChunk.Types.DataType.Audio:
+                        m_CurrentConnection.incomingAudioQueue.Enqueue(new AudioChunk(response));
+                        break;
+                    case DataChunk.Types.DataType.Animation:
+                        m_CurrentConnection.incomingAnimationQueue.Enqueue(new AnimationChunk(response));
+                        break;
+                    case DataChunk.Types.DataType.State:
+                        StateChunk stateChunk = new StateChunk(response);
+                        LastState = stateChunk.Chunk.ToBase64();
+                        break;
+                    default:
+                        InworldAI.LogError($"Unsupported incoming event: {response}");
+                        break;
+                }
+            }
+            else if (response.Text != null)
+            {
+                m_CurrentConnection.incomingInteractionsQueue.Enqueue(new TextEvent(response));
+            }
+            else if (response.Gesture != null)
+            {
+                m_CurrentConnection.incomingInteractionsQueue.Enqueue(new GestureEvent(response));
+            }
+            else if (response.Control != null)
+            {
+                m_CurrentConnection.incomingInteractionsQueue.Enqueue(new Packets.ControlEvent(response));
+            }
+            else if (response.Emotion != null)
+            {
+                m_CurrentConnection.incomingInteractionsQueue.Enqueue(new EmotionEvent(response));
+            }
+            else if (response.Custom != null)
+            {
+                m_CurrentConnection.incomingInteractionsQueue.Enqueue(new CustomEvent(response));
+            }
+            else
+            {
+                InworldAI.LogError($"Unsupported incoming event: {response}");
+            }
+        }
+
         internal async Task EndSession()
         {
-            if (IsInteracting)
+            if (SessionStarted)
             {
                 m_CurrentConnection = null;
-                IsInteracting = false;
+                SessionStarted = false;
                 await m_StreamingCall.RequestStream.CompleteAsync();
                 m_StreamingCall.Dispose();
             }

@@ -9,6 +9,7 @@ using Inworld.Packets;
 using Inworld.Util;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 namespace Inworld
@@ -30,7 +31,9 @@ namespace Inworld
         LimitedSizeDictionary<string, bool> m_PlayedUtterances;
         LimitedSizeDictionary<string, bool> m_CanceledInteractions;
         PacketId m_CurrentUtteranceID;
+        const string k_Pattern = @"^inworld\.goal_complete\.(.+)$";
         List<HistoryItem> History => m_ChatHistory.Where(x => !x.IsAgent || m_PlayedUtterances.ContainsKey(x.UtteranceId)).Take(m_HistorySize).ToList();
+        internal bool isSpeaking;
         #endregion
 
 
@@ -60,6 +63,9 @@ namespace Inworld
             m_PlayedUtterances ??= new LimitedSizeDictionary<string, bool>(collectionsSize);
             m_CanceledInteractions ??= new LimitedSizeDictionary<string, bool>(collectionsSize);
             Character.OnCharacterSpeaks ??= new UnityEvent<string, string>();
+            Character.OnFinishedSpeaking ??= new UnityEvent();
+            Character.OnBeginSpeaking ??= new UnityEvent();
+            Character.OnGoalCompleted ??= new UnityEvent<string>();
         }
         protected virtual void OnPacketEvents(InworldPacket packet)
         {
@@ -73,14 +79,29 @@ namespace Inworld
                     _HandleTextEvent(textEvent);
                     break;
                 case ControlEvent controlEvent:
-                    AddInteractionEnd(controlEvent.PacketId.InteractionId);
+                    _AddInteractionEnd(controlEvent.PacketId.InteractionId);
                     break;
+                case CustomEvent customEvent:
+                    _HandleCustomEvent(customEvent);
+                    break;
+            }
+        }
+        void _HandleCustomEvent(CustomEvent customEvent)
+        {
+            Match match = new Regex(k_Pattern).Match(customEvent.Name);
+            if (match.Success && match.Groups.Count > 1)
+            {
+                Character.OnGoalCompleted.Invoke(match.Groups[1].Value);
+            }
+            else
+            {
+                Character.OnGoalCompleted.Invoke(customEvent.Name);
             }
         }
         /**
          * Signals that there wont be more interaction utterances.
          */
-        void AddInteractionEnd(string interactionId)
+        void _AddInteractionEnd(string interactionId)
         {
             if (m_ChatHistory == null || m_ChatHistory.Count <= 0)
                 return;
@@ -88,11 +109,10 @@ namespace Inworld
             if (lastHistoryItem == null || lastHistoryItem.UtteranceId == null)
                 return;
             lastHistoryItem.Final = true;
-            if (m_PlayedUtterances.ContainsKey(lastHistoryItem.UtteranceId) && (m_CurrentUtteranceID == null || m_CurrentUtteranceID.UtteranceId != lastHistoryItem.UtteranceId))
-            {
-                // Already played utterance.
-                CompleteInteraction(interactionId);
-            }
+            if (!m_PlayedUtterances.ContainsKey(lastHistoryItem.UtteranceId))
+                return;
+            // Already played utterance.
+            CompleteInteraction(interactionId);
         }
         public virtual void AddText(TextEvent textEvent)
         {
@@ -205,7 +225,10 @@ namespace Inworld
             if (Character)
             {
                 if (textEvent.Routing.Source.IsAgent())
+                {
+                    Character.IsSpeaking = true;
                     Character.OnCharacterSpeaks?.Invoke(Character.CharacterName, textEvent.Text);
+                }
                 if (textEvent.Routing.Target.IsAgent())
                     Character.OnCharacterSpeaks?.Invoke("Player", textEvent.Text);
             }
@@ -217,7 +240,7 @@ namespace Inworld
         }
         protected void CompleteInteraction(string interactionId)
         {
-            InworldAI.Log("" + interactionId + " Finish!");
+            Character.IsSpeaking = false;
             List<HistoryItem> itemsByInteraction = History
                                                    .Where(x => x.InteractionId == interactionId).ToList();
             if (Character)

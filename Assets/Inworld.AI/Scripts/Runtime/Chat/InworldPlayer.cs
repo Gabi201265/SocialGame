@@ -4,7 +4,6 @@
 * Use of this source code is governed by the Inworld.ai Software Development Kit License Agreement
 * that can be found in the LICENSE.md file or at https://www.inworld.ai/sdk-license
 *************************************************************************************************/
-
 using Inworld.Runtime;
 using Inworld.Sample.UI;
 using Inworld.Util;
@@ -12,14 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-
-
 namespace Inworld.Sample
 {
     /// <summary>
     ///     This is the class for global text management, by original, it's added in Player Controller.
-    ///     And would be called by Keycode.Backquote. 
-    ///     Hugo : Changement du Backquote en touche entrée.
+    ///     And would be called by Keycode.Backquote.
     /// </summary>
     public class InworldPlayer : MonoBehaviour
     {
@@ -35,10 +31,8 @@ namespace Inworld.Sample
         [SerializeField] RuntimeCanvas m_RTCanvas;
         [SerializeField] Vector3 m_InitPosition;
         [SerializeField] Vector3 m_InitRotation;
-        [SerializeField] public static bool m_chatIsOpened { set; get; } = false;
-        
         #endregion
-
+        [SerializeField] public static bool m_chatIsOpened { set; get; } = false;
         #region Private Variables
         readonly Dictionary<string, ChatBubble> m_Bubbles = new Dictionary<string, ChatBubble>();
         readonly Dictionary<string, InworldCharacter> m_Characters = new Dictionary<string, InworldCharacter>();
@@ -53,9 +47,16 @@ namespace Inworld.Sample
         {
             if (string.IsNullOrEmpty(m_InputField.text))
                 return;
+            if (!InworldController.Instance.CurrentCharacter)
+            {
+                InworldAI.LogError("No Character is interacting.");
+                return;
+            }
             InworldController.Instance.CurrentCharacter.SendText(m_InputField.text);
             m_InputField.text = null;
         }
+        public void RegisterCharacter(InworldCharacter character) => character.InteractionEvent.AddListener(OnInteractionStatus);
+
         public void BackToLobby()
         {
             if (!m_RTCanvas)
@@ -78,10 +79,9 @@ namespace Inworld.Sample
         }
         void Update()
         {
-            
             //m_GlobalChatCanvas.activeSelf == false si chat is close
             //m_GlobalChatCanvas.activeSelf == true si chat is open
-            
+
             if (Input.GetKeyUp(KeyCode.Return) && string.IsNullOrEmpty(m_InputField.text))
             {
                 //ne fait rien si aucun PNJ dectecter
@@ -106,9 +106,21 @@ namespace Inworld.Sample
             //sendText if key == enter
             SendText();
             m_InputField.ActivateInputField();//focus on input when send message
-            
 
-
+            /*
+            if (Input.GetKeyUp(KeyCode.BackQuote))
+            {
+                m_GlobalChatCanvas.SetActive(!m_GlobalChatCanvas.activeSelf);
+                if (m_CameraController)
+                    m_CameraController.enabled = !m_GlobalChatCanvas.activeSelf;
+                if (m_TriggerCanvas)
+                    m_TriggerCanvas.SetActive(!m_TriggerCanvas.activeSelf);
+            }
+            if (!m_GlobalChatCanvas.activeSelf)
+                return;
+            if (!Input.GetKeyUp(KeyCode.Return) && !Input.GetKeyUp(KeyCode.KeypadEnter))
+                return;
+            SendText();*/
         }
         #endregion
 
@@ -118,7 +130,7 @@ namespace Inworld.Sample
             if (states != ControllerStates.Connected)
                 return;
             _ClearHistoryLog();
-            foreach (InworldCharacter iwChar in InworldController.Instance.Characters)
+            foreach (InworldCharacter iwChar in InworldController.Characters)
             {
                 m_Characters[iwChar.ID] = iwChar;
                 iwChar.InteractionEvent.AddListener(OnInteractionStatus);
