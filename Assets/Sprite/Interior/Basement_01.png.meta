@@ -4168,7 +4168,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 1, y: -6}
+        - {x: 1, y: -24}
+        - {x: 24, y: -24}
+        - {x: 24, y: -6}
       tessellationDetail: 0
       bones: []
       spriteID: 5a41df2e5a1cdca4ba2e3bb6e0119c97
@@ -4189,7 +4193,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -24, y: -24}
+        - {x: 24, y: -24}
+        - {x: 24, y: -6}
+        - {x: -24, y: -6}
       tessellationDetail: 0
       bones: []
       spriteID: 76da7042049b2d5428142d38ca1b6be0
@@ -4210,7 +4218,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -24, y: -6}
+        - {x: -24, y: -24}
+        - {x: -4, y: -24}
+        - {x: -4, y: -6}
       tessellationDetail: 0
       bones: []
       spriteID: 4fa5a08fd430fe54ead1cf3909b5fefe
@@ -5105,15 +5117,18 @@ TextureImporter:
       name: Basement_01_237
       rect:
         serializedVersion: 2
-        x: 624
-        y: 0
+        x: 625
+        y: 1
         width: 48
         height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 24, y: 24}
+        - {x: 24, y: 24}
+        - {x: 24, y: 24}
       tessellationDetail: 0
       bones: []
       spriteID: 07b32af94b9a3464fa7047f98c488e43
@@ -5134,7 +5149,10 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 24, y: 24}
+        - {x: 24, y: 24}
+        - {x: 24, y: 24}
       tessellationDetail: 0
       bones: []
       spriteID: 74043da17979b6a47a3f1ed96326a2ba
@@ -5155,7 +5173,10 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 24, y: 24}
+        - {x: 24, y: 24}
+        - {x: 24, y: 24}
       tessellationDetail: 0
       bones: []
       spriteID: 996e1e818b96f884c8ea568d62a7c402
