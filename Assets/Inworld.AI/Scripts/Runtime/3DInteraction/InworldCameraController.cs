@@ -1,6 +1,10 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
-#endif
+﻿/*************************************************************************************************
+* Copyright 2022 Theai, Inc. (DBA Inworld)
+*
+* Use of this source code is governed by the Inworld.ai Software Development Kit License Agreement
+* that can be found in the LICENSE.md file or at https://www.inworld.ai/sdk-license
+*************************************************************************************************/
+
 using UnityEngine;
 namespace Inworld.Sample
 {
@@ -31,10 +35,7 @@ namespace Inworld.Sample
             // Exit Sample  
             if (Input.GetKey(KeyCode.Escape))
             {
-                Application.Quit();
-				#if UNITY_EDITOR
-                EditorApplication.isPlaying = false;
-				#endif
+                InworldController.Instance.StartTerminate();
             }
             // Hide and lock cursor when right mouse button pressed
             if (Input.GetMouseButtonDown(0))

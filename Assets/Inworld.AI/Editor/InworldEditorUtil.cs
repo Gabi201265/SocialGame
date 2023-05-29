@@ -13,6 +13,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using System.Linq;
 using UnityEngine;
+
 #if UNITY_IPHONE
 using System.IO;
 using UnityEditor.Callbacks;
@@ -52,6 +53,7 @@ namespace Inworld.Editor
                 return;
             if (_WillSetupInworldCharacter)
                 _SetupInworldCharacter(Selection.activeGameObject);
+            
         }
         static void OnHierarchyChanged()
         {
@@ -252,7 +254,7 @@ namespace Inworld.Editor
 
         [MenuItem("Assets/Inworld Settings", false, 1)]
         static void ShowPanel() => Selection.SetActiveObjectWithContext(InworldAI.Instance, InworldAI.Instance);
-
+        
         #endregion
 
         #region Scene Menu
@@ -277,6 +279,8 @@ namespace Inworld.Editor
             }
             mainCamera = PrefabUtility.InstantiatePrefab(InworldAI.PlayerControllerPrefab) as GameObject;
             InworldController.Player = mainCamera;
+            EditorUtility.SetDirty(InworldController.Instance);
+            AssetDatabase.SaveAssets();
         }
         [MenuItem("GameObject/Inworld/Add/Inworld Character", true, 3)]
         static bool CheckInworldController()
@@ -360,6 +364,16 @@ namespace Inworld.Editor
         }
     }
     [CustomEditor(typeof(InworldGameSettings))] public class InworldGameSettingInspector : InworldInspector {}
-    [CustomEditor(typeof(GLTFAvatarLoader))] public class InworldAvatarLoaderInspector : InworldInspector {}
+
+    [CustomEditor(typeof(GLTFAvatarLoader))]
+    public class InworldAvatarLoaderInspector : InworldInspector
+    {
+        [MenuItem("GameObject/Inworld/Update Materials for Scriptable Render Pipelines", false, 1)]
+        static void UpdateMaterials()
+        {
+            Debug.Log("Updating menu materials before if check on " + Selection.activeGameObject.name);
+            InworldAI.AvatarLoader.InstallScriptableRenderPipelineMaterials();
+        }
+    }
 }
 #endif

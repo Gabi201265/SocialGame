@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a204091dcffe61d469953fc99afdeb64, type: 3}
   m_Name: DefaultSettings
   m_EditorClassIdentifier: 
+  m_CanReceiveAudio: 1
+  m_Interruptible: 0
   m_ThumbnailFolder: Thumbnails
   m_AvatarFolder: Avatars
   m_CharacterDataFolder: Characters
   m_SceneDataFolder: InworldScenes
   m_WorkspaceDataFolder: Workspaces
   m_KeySecretDataFolder: APIKeys
-  m_DefaultThumbnail: {fileID: 2800000, guid: 09337fcbd1c630040a7b30669fbe17a6, type: 3}
+  m_DefaultThumbnail: {fileID: 2800000, guid: 91e5635abe42fce43a21e62dc2f60875, type: 3}
   m_DefaultAvatar: {fileID: 0}
   m_DefaultWorkspace: {fileID: 11400000, guid: d809abc8a24341d40ae9c288fa6ea5cb, type: 2}
   m_EnableVerboseLog: 1
