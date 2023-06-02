@@ -6,14 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class MoveScene : MonoBehaviour
 {
+    public Animator transition;
     public int sceneBuildIndex;
     // Start is called before the first frame update
-    private void OnTriggerEnter2D(Collider2D other)
+    IEnumerator OnTriggerEnter2D(Collider2D other)
     {
         print("Trigger Entered");
 
         if (other.tag == "Player")
         {
+            
+            transition.SetTrigger("Start");
+            yield return new WaitForSeconds(2f);
             SceneManager.LoadScene(sceneBuildIndex, LoadSceneMode.Single);
         }
     }
