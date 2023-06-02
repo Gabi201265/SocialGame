@@ -29,13 +29,18 @@ public class Pause : MonoBehaviour
             }
             else
             {
-                Time.timeScale = 1f;
-                pauseMenuUI.SetActive(false);
+                Resume();
             }
         }
     }
 
-    public void quitGame()
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        pauseMenuUI.SetActive(false);
+    }
+
+    public void QuitGame()
     {
         isPaused = false;
         Time.timeScale = 1f;
