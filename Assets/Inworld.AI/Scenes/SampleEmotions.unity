@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 3
+    serializedVersion: 2
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    buildHeightMesh: 0
+    accuratePlacement: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -128,7 +128,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2287690361876978916, guid: e237fa958bda1d748be4ac40b9f0c7b1, type: 3}
@@ -180,9 +179,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e237fa958bda1d748be4ac40b9f0c7b1, type: 3}
 --- !u!1 &44612239
 GameObject:
@@ -1948,7 +1944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AutoStart: 1
-  m_Data: {fileID: 11400000, guid: b756ca7ebf603b242af62cefe8c9a5a4, type: 2}
+  m_Data: {fileID: 11400000, guid: 4952df7b265f22a4b95b85966797af56, type: 2}
   m_InworldPlayer: {fileID: 467126464424144635}
   m_Capture: {fileID: 359806125}
 --- !u!4 &359806124
@@ -1979,12 +1975,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eedce951bbc942d448b133a3376faec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnRecordingStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnRecordingEnd:
-    m_PersistentCalls:
-      m_Calls: []
   m_AudioRate: 16000
   m_BufferSeconds: 1
 --- !u!114 &359806126
@@ -1999,11 +1989,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d696a9c5a5562f4a9af19423ad21b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Updatable: 1
-  m_WSData: {fileID: 11400000, guid: d785daa9e4713a94695d455623fb5422, type: 2}
-  m_InworldSceneData: {fileID: 11400000, guid: b756ca7ebf603b242af62cefe8c9a5a4, type: 2}
+  m_Updatable: 0
+  m_WSData: {fileID: 11400000, guid: d809abc8a24341d40ae9c288fa6ea5cb, type: 2}
+  m_InworldSceneData: {fileID: 11400000, guid: 4952df7b265f22a4b95b85966797af56, type: 2}
   m_CharData: {fileID: 11400000, guid: f9ff4d00c5c0c2d44a42f5120344d25e, type: 2}
-  m_KeySecret: {fileID: 11400000, guid: e5f22d11db01672419c5c3fb0f1fb230, type: 2}
+  m_KeySecret: {fileID: 11400000, guid: e497c72dc573b54468cc81189ea3b92c, type: 2}
 --- !u!1 &375024084
 GameObject:
   m_ObjectHideFlags: 0
@@ -6817,7 +6807,6 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -7195,7 +7184,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
     m_TransformParent: {fileID: 5640325390817324673}
     m_Modifications:
     - target: {fileID: -3915082565821610680, guid: 462787370f9ff1845901709916b568ee, type: 3}
@@ -7275,9 +7263,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 9199261849990390558, guid: 462787370f9ff1845901709916b568ee, type: 3}
 --- !u!1 &1295994360 stripped
 GameObject:
@@ -9213,7 +9198,6 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -10420,21 +10404,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9047055560615332209}
-  serializedVersion: 4
+  serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -10448,17 +10421,9 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9047055560615332209}
   m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &2022283243
@@ -11059,17 +11024,9 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
-  m_Iso: 200
-  m_ShutterSpeed: 0.005
-  m_Aperture: 16
-  m_FocusDistance: 10
-  m_FocalLength: 50
-  m_BladeCount: 5
-  m_Curvature: {x: 2, y: 11}
-  m_BarrelClipping: 0.25
-  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -11365,7 +11322,6 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -11600,14 +11556,10 @@ MonoBehaviour:
   m_SightAngle: 180
   m_SightDistance: 10
   m_SightRefreshRate: 0.25
-  m_logUtterances: 0
-  OnBeginSpeaking:
+  OnAudioStarted:
     m_PersistentCalls:
       m_Calls: []
-  OnFinishedSpeaking:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCharacterSpeaks:
+  OnAudioFinished:
     m_PersistentCalls:
       m_Calls: []
 --- !u!222 &4719297120864292418
@@ -11903,7 +11855,7 @@ GameObject:
   m_IsActive: 1
 --- !u!95 &6301156353809837183
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -11920,8 +11872,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!4 &6526292728921292332
 Transform:
   m_ObjectHideFlags: 0
@@ -12037,7 +11988,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FaceAnimData: {fileID: 11400000, guid: 300d661927d94334a8fe159953aabfcf, type: 2}
-  m_CustomModel: 0
   m_LipExpression: 0.7
 --- !u!114 &9089111332921730522
 MonoBehaviour:

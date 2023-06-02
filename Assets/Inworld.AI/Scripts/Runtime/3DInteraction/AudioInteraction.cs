@@ -5,6 +5,8 @@
 * that can be found in the LICENSE.md file or at https://www.inworld.ai/sdk-license
 *************************************************************************************************/
 using Inworld.Packets;
+using Inworld.Util;
+using System;
 using System.Collections.Concurrent;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,6 +36,8 @@ namespace Inworld.Audio
         const float k_FixedUpdatePeriod = 0.1f;
         PacketId m_CurrentlyPlayingUtterance;
         string m_LastInteraction;
+        public event Action OnAudioStarted;
+        public event Action OnAudioEnd;
         #endregion
 
         #region Properties & API
@@ -49,8 +53,6 @@ namespace Inworld.Audio
         {
             base.Init();
             Character.PlaybackSource ??= GetComponent<AudioSource>();
-            Character.OnFinishedSpeaking ??= new UnityEvent();
-            Character.OnBeginSpeaking ??= new UnityEvent<PacketId>();
         }
         /// <summary>
         ///     Call this func to clean up cached queue.
@@ -80,6 +82,8 @@ namespace Inworld.Audio
         #region MonoBehavior Functions
         void Awake()
         {
+            if (!InworldAI.Settings.ReceiveAudio)
+                enabled = false;
             Init();
         }
         void OnEnable()
@@ -126,8 +130,7 @@ namespace Inworld.Audio
                 CompleteUtterance(m_CurrentlyPlayingUtterance);
             m_CurrentlyPlayingUtterance = null;
             InworldController.Instance.TTSEnd(Character.ID);
-            if (Character)
-                Character.OnFinishedSpeaking?.Invoke();
+            OnAudioEnd?.Invoke();
         }
         void _TryGetAudio()
         {
@@ -146,8 +149,7 @@ namespace Inworld.Audio
             }
             StartUtterance(m_CurrentAudioChunk.PacketId);
             InworldController.Instance.TTSStart(Character.ID);
-            if (Character)
-                Character.OnBeginSpeaking?.Invoke(m_CurrentAudioChunk.PacketId);
+            OnAudioStarted?.Invoke();
         }
         bool IsAudioChunkAvailable(PacketId packetID)
         {
