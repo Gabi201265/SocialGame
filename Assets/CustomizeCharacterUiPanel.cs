@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Sprites;
 using UnityEngine.U2D.Animation;
+using UnityEngine.SceneManagement;
 
 using TMPro;
 
@@ -217,4 +218,9 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         characterDescription.pantsColor = SO_PantsOptions[currPantsIndex];
     }
 
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("Exterior2.0");
+    }
 }
