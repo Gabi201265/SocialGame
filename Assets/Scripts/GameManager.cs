@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     private Vector3[] playerCoordinates;
 
+    private bool isPaused = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -24,6 +26,23 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializePlayerCoordinates();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused;
+
+            if (isPaused)
+            {
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+        }
     }
 
     public void SetPlayerCoordinates(int sceneIndex, Vector3 coordinates)
