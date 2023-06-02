@@ -26,10 +26,6 @@ public class GameManager : MonoBehaviour
         InitializePlayerCoordinates();
     }
 
-    private void Update()
-    {
-        //Debug.Log("coo :"+playerCoordinates[1]);
-    }
     public void SetPlayerCoordinates(int sceneIndex, Vector3 coordinates)
     {
         if (sceneIndex >= 0 && sceneIndex < playerCoordinates.Length)
