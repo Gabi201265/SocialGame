@@ -7,16 +7,14 @@ using UnityEngine.U2D.Animation;
 public class CharacterCustomization : MonoBehaviour
 {
 
-    [Header("Custom Character")]
+    [Header("Body Part")]
 
     [SerializeField] GameObject body;
     [SerializeField] GameObject hair;
     [SerializeField] GameObject shirt;
     [SerializeField] GameObject pant;
 
-    [Header("Skin Tones")]
-    [SerializeField] List<Color> m_skinTone;
-
+    [Header("Character Description")]
 
     [SerializeField] public SO_CharacterDescription characterDescription;
 
