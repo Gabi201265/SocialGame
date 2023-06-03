@@ -57,17 +57,17 @@ public class GameManager : MonoBehaviour
         int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;
         playerCoordinates = new Vector3[sceneCount];
 
-        playerCoordinates[0] = new Vector3(7.95f, 1.9f, 0);
-        playerCoordinates[1] = new Vector3(45.74f, -56.69f, 0);
-        playerCoordinates[2] = new Vector3(0,0,0);
+        playerCoordinates[0] = new Vector3(0, 0, 0);
+        playerCoordinates[1] = new Vector3(7.95f, 1.9f, 0);
+        playerCoordinates[2] = new Vector3(45.74f, -56.69f, 0);
         playerCoordinates[3] = new Vector3(0, 0, 0);
         playerCoordinates[4] = new Vector3(-0.55f, -4.82f, 0);
         playerCoordinates[5] = new Vector3(-5f, -4.6f, 0);
         playerCoordinates[6] = new Vector3(-8.81f, -3.79f, 0);
-        playerCoordinates[7] = new Vector3(6.85f, -4.71f, 0);
-        playerCoordinates[8] = new Vector3(-6.93f, -4.67f, 0);
-        playerCoordinates[9] = new Vector3(-7.3f, -4.85f, 0);
-        playerCoordinates[10] = new Vector3(5f, -4.48f, 0);
+        playerCoordinates[7] = new Vector3(7f, -4f, 0);
+        playerCoordinates[8] = new Vector3(-7f, -4f, 0);
+        playerCoordinates[9] = new Vector3(-7f, -4f, 0);
+        playerCoordinates[10] = new Vector3(4.5f, -4.21f, 0);
         playerCoordinates[11] = new Vector3(7f, -5.27f, 0);
         //for (int i = 0; i < sceneCount; i++)
         //{
