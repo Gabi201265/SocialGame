@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         playerCoordinates[7] = new Vector3(7f, -4f, 0);
         playerCoordinates[8] = new Vector3(-7f, -4f, 0);
         playerCoordinates[9] = new Vector3(-7f, -4f, 0);
-        playerCoordinates[10] = new Vector3(4.5f, -4.21f, 0);
+        playerCoordinates[10] = new Vector3(8.4f, -4.21f, 0);
         playerCoordinates[11] = new Vector3(7f, -5.27f, 0);
         //for (int i = 0; i < sceneCount; i++)
         //{
