@@ -364,6 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 9
+  transition: {fileID: 222991772}
 --- !u!61 &62050800
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -516,7 +517,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &203313268
 MonoBehaviour:
@@ -679,14 +680,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 319593469}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.754055, y: 0.013028085, z: -1.7522566}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.496789, y: -2.8987255, z: -1.8300703}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 222991771}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_Father: {fileID: 1360411862}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &339270937
 GameObject:
@@ -1971,7 +1972,7 @@ Transform:
   - {fileID: 1688644168}
   - {fileID: 1043203315}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792766527
 GameObject:
@@ -3024,6 +3025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 8
+  transition: {fileID: 222991772}
 --- !u!61 &820738794
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4040,7 +4042,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3440912543338620916, guid: dec55244df93cd7469926c7b72e6ea49, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3440912543338620916, guid: dec55244df93cd7469926c7b72e6ea49, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7007,6 +7009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 7
+  transition: {fileID: 222991772}
 --- !u!61 &1276466441
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7101,8 +7104,9 @@ Transform:
   - {fileID: 1276466442}
   - {fileID: 820738795}
   - {fileID: 1816996896}
+  - {fileID: 319593470}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1423140577
 GameObject:
@@ -9217,6 +9221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 11
+  transition: {fileID: 222991772}
 --- !u!61 &1816996895
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9370,3 +9375,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 4
+  transition: {fileID: 222991772}

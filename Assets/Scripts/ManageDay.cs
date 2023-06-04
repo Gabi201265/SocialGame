@@ -30,7 +30,7 @@ public class ManageDay : MonoBehaviour
         }
         if (nbDay == MaxNbDay)
         {
-            SceneManager.LoadScene("GameOver");
+            SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
 }

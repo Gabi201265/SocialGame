@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 public class MoveScene : MonoBehaviour
 {
     public int sceneBuildIndex;
+    public Animator transition;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    IEnumerator OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            transition.SetTrigger("Start");
+            yield return new WaitForSeconds(2f);
             SceneManager.LoadScene(sceneBuildIndex, LoadSceneMode.Single);
         }
     }
