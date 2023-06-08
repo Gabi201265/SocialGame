@@ -8,6 +8,7 @@ public class Pause : MonoBehaviour
 
     public GameObject pauseMenuUI;
     private bool isPaused = false;
+    public ManageDay manageDayScript;
 
 
     // Start is called before the first frame update
@@ -46,6 +47,7 @@ public class Pause : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         pauseMenuUI.SetActive(false);
+        manageDayScript.setNbDay(0);
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 }
