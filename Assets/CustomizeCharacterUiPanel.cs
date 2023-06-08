@@ -16,6 +16,7 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
     [SerializeField] GameObject hair;
     [SerializeField] GameObject shirt;
     [SerializeField] GameObject pant;
+    [SerializeField] GameObject cheek;
 
     [SerializeField] public SO_CharacterDescription characterDescription;
 
@@ -23,6 +24,8 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
     [SerializeField] public SO_CharacterCompositionElement[] SO_HairOptions;
     [SerializeField] public SO_CharacterCompositionElement[] SO_ShirtOptions;
     [SerializeField] public SO_CharacterCompositionElement[] SO_PantsOptions;
+
+    [SerializeField] SpriteLibraryAsset cheekLibrary;
     int currSkinColorIndex;
     int currHairIndex;
     int currShirtIndex;
@@ -33,16 +36,19 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
     [SerializeField] TextMeshProUGUI HairTextField; 
     [SerializeField] TextMeshProUGUI ShirtTextField; 
     [SerializeField] TextMeshProUGUI PantsTextField; 
+    [SerializeField] TextMeshProUGUI CheekTextField; 
 
     SpriteRenderer bodySprite;
     SpriteRenderer hairSprite;
     SpriteRenderer shirtSprite;
     SpriteRenderer pantsSprite;
+    SpriteRenderer cheekSprite;
 
     Image bodyImage;
     Image hairImage;
     Image shirtImage;
     Image pantsImage;
+    Image cheekImage;
 
     SpriteResolver bodySR;
 
@@ -76,12 +82,14 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         hairSprite = hair.GetComponent<SpriteRenderer>();
         shirtSprite = shirt.GetComponent<SpriteRenderer>();
         pantsSprite = pant.GetComponent<SpriteRenderer>();
+        cheekSprite = cheek.GetComponent<SpriteRenderer>();
 
 
         bodyImage = body.GetComponent<Image>();
         hairImage = hair.GetComponent<Image>();
         shirtImage = shirt.GetComponent<Image>();
         pantsImage = pant.GetComponent<Image>();
+        cheekImage = cheek.GetComponent<Image>();
 
         currDirectionIndex = 0;
         currDirection = directions[currDirectionIndex];
@@ -90,6 +98,7 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         currHairColor = characterDescription.hairColor;
         currShirtColor = characterDescription.shirtColor;
         currPantsColor = characterDescription.pantsColor;
+
 
         for(int i = 0; i < SO_SkinColorOptions.Length; i++)
             if(SO_SkinColorOptions[i] == characterDescription.skinTone)
@@ -146,6 +155,14 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         pantsImage.material = pantsSprite.material;
         pantsImage.material.color = characterDescription.pantsColor.color;
         PantsTextField.text = SO_PantsOptions[currPantsIndex].elementName;
+
+        //cheek
+        cheek.GetComponent<SpriteLibrary>().spriteLibraryAsset = cheekLibrary;
+        cheekImage.sprite = cheekSprite.sprite;
+        cheekImage.material = cheekSprite.material;
+        pantsImage.material.color = cheekSprite.material.color;
+        CheekTextField.text = characterDescription.sexe.ToString();
+        cheek.SetActive(characterDescription.sexe == SO_CharacterDescription.Sexe.Female ? true : false);
 
 
     }
@@ -218,6 +235,11 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         characterDescription.pantsColor = SO_PantsOptions[currPantsIndex];
     }
 
+
+    public void ArrowSexe()
+    {
+        characterDescription.sexe = characterDescription.sexe == SO_CharacterDescription.Sexe.Male ? SO_CharacterDescription.Sexe.Female : SO_CharacterDescription.Sexe.Male;
+    }
 
     public void PlayGame()
     {
