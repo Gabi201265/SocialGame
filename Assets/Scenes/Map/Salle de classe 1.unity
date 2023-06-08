@@ -4939,6 +4939,72 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1295507439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1295507442}
+  - component: {fileID: 1295507441}
+  - component: {fileID: 1295507440}
+  m_Layer: 0
+  m_Name: ZoneStone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1295507440
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295507439}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7.668474, y: 10.892684, z: 1}
+  m_Center: {x: 0.35565215, y: -4.946342, z: 0}
+--- !u!114 &1295507441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295507439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c8da71da7ccfe48b543d95f2979297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1295507442
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295507439}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.1108518, y: 4.9, z: -0.36898392}
+  m_LocalScale: {x: 2.5874999, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1309315395
 GameObject:
   m_ObjectHideFlags: 0
@@ -8544,10 +8610,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 365f657c825d6fb4e8858b7f6d11d3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 0}
-  isStone: 0
-  isGround: 0
-  isGrass: 0
   footStepCollection: []
   footstepsGround:
   - {fileID: 8300000, guid: 5461cae585b64f64089805f0d313bc84, type: 3}
@@ -8576,7 +8638,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3af6e561e364a274aa306461461c386b, type: 3}
   - {fileID: 8300000, guid: eea9624d96ae191439615ca598fe01fa, type: 3}
   footstepDelay: 0.5
-  audioSource: {fileID: 1690600372}
 --- !u!1 &1951816786
 GameObject:
   m_ObjectHideFlags: 0

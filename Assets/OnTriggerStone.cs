@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class OnTriggerStone : MonoBehaviour
 {
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         print("aaaa");
         if (collision.name == "Player")
         {
