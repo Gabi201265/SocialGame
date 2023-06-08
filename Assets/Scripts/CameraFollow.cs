@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraFollow : MonoBehaviour
 {
     public Transform target;
     public BoxCollider2D areaBox;
     private float halfWidth, halfHeight;
+    private float divider;
 
     Camera mycam;
     // Start is called before the first frame update
     void Start()
     {
+        divider = 220f;
+        if (SceneManager.GetActiveScene().buildIndex == 2) divider = 100f;
+
         mycam = GetComponent<Camera>();
-        mycam.orthographicSize = (Screen.height / 100f);
+        mycam.orthographicSize = (Screen.height / divider);
         halfHeight = mycam.orthographicSize;
         halfWidth = mycam.orthographicSize * mycam.aspect;
     }

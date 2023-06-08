@@ -11,6 +11,16 @@ public class ManageDay : MonoBehaviour
     float tick;
     int nbDay;
     public int MaxNbDay=20;
+
+    public int getNbDay()
+    {
+        return this.nbDay;
+    }
+
+    public void setNbDay(int pNbDay)
+    {
+        this.nbDay = pNbDay;
+    }
     // Start is called before the first frame update
     void Awake()
     {
@@ -30,7 +40,7 @@ public class ManageDay : MonoBehaviour
         }
         if (nbDay == MaxNbDay)
         {
-            SceneManager.LoadScene("GameOver");
+            SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
 }

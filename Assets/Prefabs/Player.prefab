@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1809311225, guid: d33400d53fcaf3d44a35872c8580b0de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -190,7 +190,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1636779299, guid: 8d4f91a7cdd400542aae59aff4ccda74, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 8466084778684727991}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7cc6f6afc5f394cbf6f570db37fae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 2
+  runSpeed: 8
 --- !u!95 &6873672906263148362
 Animator:
   serializedVersion: 5
@@ -385,11 +385,7 @@ MonoBehaviour:
   hair: {fileID: 8854957919079319330}
   shirt: {fileID: 9164188734762108005}
   pant: {fileID: 3450162222909510710}
-  m_skinTone:
-  - {r: 1, g: 0.88235295, b: 0.7372549, a: 1}
-  - {r: 0.91764706, g: 0.65882355, b: 0.4627451, a: 1}
-  - {r: 0.99607843, g: 0.8392157, b: 0.627451, a: 1}
-  - {r: 0.45882353, g: 0.23921569, b: 0.16470589, a: 1}
+  cheek: {fileID: 293546107822373350}
   characterDescription: {fileID: 11400000, guid: d96c35b36a0783244900da103f153f54, type: 2}
 --- !u!1 &5176824409641084951
 GameObject:
@@ -581,7 +577,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2035530684, guid: 9f07814bb08822f4a8f3e41ed6ea18f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -697,7 +693,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1096834811, guid: b04e32ce01088a341a695576e6a1d001, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
