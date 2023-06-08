@@ -241,8 +241,8 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         characterDescription.sexe = characterDescription.sexe == SO_CharacterDescription.Sexe.Male ? SO_CharacterDescription.Sexe.Female : SO_CharacterDescription.Sexe.Male;
     }
 
-    public void PlayGame()
+    public void BackToMenu()
     {
-        SceneManager.LoadScene("Exterior2.0");
+        SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
     }
 }
