@@ -160,7 +160,7 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
         cheek.GetComponent<SpriteLibrary>().spriteLibraryAsset = cheekLibrary;
         cheekImage.sprite = cheekSprite.sprite;
         cheekImage.material = cheekSprite.material;
-        pantsImage.material.color = cheekSprite.material.color;
+        cheekImage.material.color = cheekSprite.material.color;
         CheekTextField.text = characterDescription.sexe.ToString();
         cheek.SetActive(characterDescription.sexe == SO_CharacterDescription.Sexe.Female ? true : false);
 
