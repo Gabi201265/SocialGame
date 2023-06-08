@@ -22,17 +22,20 @@ public class Pause : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            isPaused = !isPaused;
-
             if (isPaused)
-            {
-                Time.timeScale = 0f;
-                pauseMenuUI.SetActive(true);
-            }
-            else
             {
                 Resume();
             }
+            else
+            {
+                Debug.Log("Avant le set active");
+                pauseMenuUI.SetActive(true);
+                Debug.Log("Apres le set active");
+                isPaused = true;
+                Time.timeScale = 0f;
+            }
+            
+            isPaused = !isPaused;
         }
     }
 
