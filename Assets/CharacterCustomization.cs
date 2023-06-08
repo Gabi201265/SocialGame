@@ -34,11 +34,14 @@ public class CharacterCustomization : MonoBehaviour
 
     void ChangeCharacter()
     {
+        //GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        //player.GetComponent<SO_CharacterDescription>().
         body.GetComponent<SpriteRenderer>().material.color = characterDescription.skinTone.color;
         hair.GetComponent<SpriteRenderer>().material.color = characterDescription.hairColor.color;
         shirt.GetComponent<SpriteRenderer>().material.color = characterDescription.shirtColor.color;
         pant.GetComponent<SpriteRenderer>().material.color = characterDescription.pantsColor.color;
-        cheek.GetComponent<SpriteRenderer>().enabled = characterDescription.sexe == SO_CharacterDescription.Sexe.Female ? true : false;
+        cheek.SetActive(characterDescription.sexe == SO_CharacterDescription.Sexe.Female ? true : false);
 
     }
 }
