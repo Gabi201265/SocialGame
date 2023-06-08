@@ -219,8 +219,8 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
     }
 
 
-    public void PlayGame()
+    public void BackToMenu()
     {
-        SceneManager.LoadScene("Exterior2.0");
+        SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
     }
 }
