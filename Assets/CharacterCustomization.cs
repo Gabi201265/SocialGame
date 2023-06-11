@@ -19,9 +19,12 @@ public class CharacterCustomization : MonoBehaviour
 
     [SerializeField] public SO_CharacterDescription characterDescription;
 
+    [SerializeField] GameSaveManager saveManager;
+
     // Start is called before the first frame update
     void Start()
     {
+        saveManager.LoadGame();
         ChangeCharacter();
     }
 

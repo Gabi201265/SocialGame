@@ -36,8 +36,10 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
     [SerializeField] TextMeshProUGUI HairTextField; 
     [SerializeField] TextMeshProUGUI ShirtTextField; 
     [SerializeField] TextMeshProUGUI PantsTextField; 
-    [SerializeField] TextMeshProUGUI CheekTextField; 
+    [SerializeField] TextMeshProUGUI CheekTextField;
 
+
+    [SerializeField] GameSaveManager saveManager;
     SpriteRenderer bodySprite;
     SpriteRenderer hairSprite;
     SpriteRenderer shirtSprite;
@@ -113,9 +115,7 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
             if(SO_PantsOptions[i] == characterDescription.pantsColor)
                 currPantsIndex = i;
 
-
         
-
         ChangeCharacter();
     }
 
@@ -243,6 +243,7 @@ public class CustomizeCharacterUiPanel : MonoBehaviour
 
     public void BackToMenu()
     {
+        saveManager.SaveGame();
         SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
     }
 }

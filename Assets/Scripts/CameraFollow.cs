@@ -9,7 +9,6 @@ public class CameraFollow : MonoBehaviour
     public BoxCollider2D areaBox;
     private float halfWidth, halfHeight;
     private float divider;
-
     Camera mycam;
     // Start is called before the first frame update
     void Start()

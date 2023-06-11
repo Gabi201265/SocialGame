@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 7919655659916144483}
   - component: {fileID: 5880324135940582849}
   - component: {fileID: 2309400973974036327}
+  - component: {fileID: 2466694324835976358}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -275,7 +276,7 @@ Transform:
   - {fileID: 5116843467275471173}
   - {fileID: 4422613853090383250}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4331650386172386126
 Rigidbody2D:
@@ -391,6 +392,7 @@ MonoBehaviour:
   pant: {fileID: 3450162222909510710}
   cheek: {fileID: 293546107822373350}
   characterDescription: {fileID: 11400000, guid: d96c35b36a0783244900da103f153f54, type: 2}
+  saveManager: {fileID: 2466694324835976358}
 --- !u!82 &835873668078013445
 AudioSource:
   m_ObjectHideFlags: 0
@@ -668,6 +670,19 @@ MonoBehaviour:
   - {fileID: 8300000, guid: eea9624d96ae191439615ca598fe01fa, type: 3}
   - {fileID: 8300000, guid: a45bdfd5056ed1d4d8f667cc2498ca12, type: 3}
   footstepDelay: 0.5
+--- !u!114 &2466694324835976358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5118729529205443546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0a86f8daacf0b5448dc50464f63100b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterDescription: {fileID: 11400000, guid: d96c35b36a0783244900da103f153f54, type: 2}
 --- !u!1 &5176824409641084951
 GameObject:
   m_ObjectHideFlags: 0
