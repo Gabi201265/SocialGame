@@ -18,12 +18,12 @@ Le logiciel Unity
 ### Installation
 
 Clone the repesitory GIT : ``git clone https://github.com/HugoHLZhang/SocialGame.git``  
-Ouvrir le projet dans unity OU extraire l'archive socialGameBuild.rar  
+Ouvrir le projet dans unity OU extraire l'archive ``socialGameBuild.rar``  
 
 ## Démarrage
 
-Lancer la scène MainMenu que vous pouvez trouver dans ``/Assets/Scenes/Menus/MainMenuScene.unity``
-Dans le cas où vous avez extrait l'archive, lancez simplement le .exe
+Lancer la scène MainMenu que vous pouvez trouver dans ``/Assets/Scenes/Menus/MainMenuScene.unity``  
+Dans le cas où vous avez extrait l'archive, lancez simplement le ``.exe``
 ## Fabriqué avec
 
 * [Unity](https://unity.com/fr) - Moteur de jeu multiplateforme
