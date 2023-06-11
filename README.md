@@ -3,8 +3,8 @@
 [![forthebadge](build-with-unity.svg)](https://forthebadge.com) [![forthebadge](made-by-sociaaaaaaaaal.svg)](https://forthebadge.com)
 
 Le but de se projet annuel est de reconstituer les interactions sociales dans un jeu. Notre jeu s'appelle social Game et intègre des PNJ doté d'une personnalité qui leur est propre. Chaque PNJ est différent.
-L'objectif de ce jeu est de recréer un environnant sociale et interactif pour que le joueur s'intègre dans un univers complètement virtuel et qu'il se sente tellement proche de la réalité qu'il la confonde avec.  
-Pour gagner le jeu, il faut arriver à inviter un des PNJ au bal de fin d'année. Si le joueur ne parvint pas à remplir cet objectif avant le délai imparti (20 jours), il perd.
+L'objectif de ce jeu est de recréer un environnement social et interactif pour que le joueur s'intègre dans un univers complètement virtuel et qu'il se sente tellement proche de la réalité qu'il la confonde avec.  
+Pour gagner le jeu, il faut arriver à inviter un des PNJ au bal de fin d'année. Si le joueur ne parvient pas à remplir cet objectif avant le délai imparti (20 jours), il perd.
 
 ## Pour commencer
 
